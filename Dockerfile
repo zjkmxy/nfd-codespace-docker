@@ -23,21 +23,23 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
     && apt-get -y install --no-install-recommends build-essential dpkg-dev git libboost-all-dev libssl-dev \
     libpcap-dev libsqlite3-dev pkg-config python-minimal psmisc
 
-RUN git clone --depth=1 --recursive --branch ndn-cxx-0.7.0 https://github.com/named-data/ndn-cxx.git && \
+RUN git clone --depth=1 --recursive --branch ndn-cxx-0.7.1 https://github.com/named-data/ndn-cxx.git && \
     cd ndn-cxx && \
     ./waf configure && \
     ./waf -j4 && \
     ./waf install && \
-    ldconfig
-RUN git clone --depth=1 --recursive --branch NFD-0.7.0 https://github.com/named-data/NFD.git && \
+    ldconfig && \
+    rm -rf ndn-cxx
+RUN git clone --depth=1 --recursive --branch NFD-0.7.1 https://github.com/named-data/NFD.git && \
     cd NFD && \
     ./waf configure && \
-    ./waf -j4 && \
+    ./waf -j2 && \
     ./waf install && \
-    cp /usr/local/etc/ndn/nfd.conf.sample /usr/local/etc/ndn/nfd.conf
-RUN git clone --depth=1 --recursive --branch ndn-tools-0.7 https://github.com/named-data/ndn-tools.git && \
+    cp /usr/local/etc/ndn/nfd.conf.sample /usr/local/etc/ndn/nfd.conf && \
+    rm -rf NFD
+RUN git clone --depth=1 --recursive --branch ndn-tools-0.7.1 https://github.com/named-data/ndn-tools.git && \
     cd ndn-tools && \
     ./waf configure && \
-    ./waf -j4 && \
-    ./waf install
-RUN rm -rf ndn-cxx NFD ndn-tools
+    ./waf -j2 && \
+    ./waf install && \
+    rm -rf ndn-tools
