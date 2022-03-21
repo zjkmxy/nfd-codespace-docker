@@ -2,6 +2,10 @@
 ARG VARIANT=3
 FROM mcr.microsoft.com/vscode/devcontainers/python:${VARIANT}
 
+LABEL org.opencontainers.image.source = "https://github.com/zjkmxy/nfd-codespace-docker"
+LABEL org.opencontainers.image.authors = "Xinyu Ma"
+LABEL org.opencontainers.image.title = "NFD Docker for codespaces"
+
 # [Option] Install Node.js
 ARG INSTALL_NODE="true"
 ARG NODE_VERSION="lts/*"
@@ -21,23 +25,23 @@ RUN if [ "${INSTALL_NODE}" = "true" ]; then su vscode -c "source /usr/local/shar
 
 RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
     && apt-get -y install --no-install-recommends build-essential dpkg-dev git libboost-all-dev libssl-dev \
-    libpcap-dev libsqlite3-dev pkg-config python-minimal psmisc
+    libpcap-dev libsqlite3-dev pkg-config psmisc
 
-RUN git clone --depth=1 --recursive --branch ndn-cxx-0.7.1 https://github.com/named-data/ndn-cxx.git && \
+RUN git clone --depth=1 --recursive --branch ndn-cxx-0.8.0 https://github.com/named-data/ndn-cxx.git && \
     cd ndn-cxx && \
     ./waf configure && \
     ./waf -j4 && \
     ./waf install && \
     ldconfig && \
     rm -rf ndn-cxx
-RUN git clone --depth=1 --recursive --branch NFD-0.7.1 https://github.com/named-data/NFD.git && \
+RUN git clone --depth=1 --recursive --branch NFD-22.02 https://github.com/named-data/NFD.git && \
     cd NFD && \
     ./waf configure && \
     ./waf -j2 && \
     ./waf install && \
     cp /usr/local/etc/ndn/nfd.conf.sample /usr/local/etc/ndn/nfd.conf && \
     rm -rf NFD
-RUN git clone --depth=1 --recursive --branch ndn-tools-0.7.1 https://github.com/named-data/ndn-tools.git && \
+RUN git clone --depth=1 --recursive --branch ndn-tools-22.02 https://github.com/named-data/ndn-tools.git && \
     cd ndn-tools && \
     ./waf configure && \
     ./waf -j2 && \
